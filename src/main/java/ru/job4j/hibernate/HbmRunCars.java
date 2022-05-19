@@ -5,10 +5,11 @@ import org.hibernate.SessionFactory;
 import org.hibernate.boot.MetadataSources;
 import org.hibernate.boot.registry.StandardServiceRegistry;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
-import ru.job4j.hibernate.model.Autor;
-import ru.job4j.hibernate.model.Books;
+import ru.job4j.hibernate.model.Mark;
+import ru.job4j.hibernate.model.Model;
 
-public class HbmRun {
+public class HbmRunCars {
+
     public static void main(String[] args) {
         final StandardServiceRegistry registry = new StandardServiceRegistryBuilder()
                 .configure().build();
@@ -17,21 +18,25 @@ public class HbmRun {
             Session session = sf.openSession();
             session.beginTransaction();
 
-            Books one = Books.of("Book");
-            Books two = Books.of("Probook");
+            Model one = Model.of("100");
+            session.save(one);
+            Model two = Model.of("200");
+            session.save(two);
+            Model three = Model.of("300");
+            session.save(three);
+            Model four = Model.of("500");
+            session.save(four);
+            Model five = Model.of("600");
+            session.save(five);
 
-            Autor first = Autor.of("Nikolay");
-            first.getBooks().add(one);
-            first.getBooks().add(two);
+            Mark mark = Mark.of("MB");
+            mark.addModel(session.load(Model.class, 1));
+            mark.addModel(session.load(Model.class, 2));
+            mark.addModel(session.load(Model.class, 3));
+            mark.addModel(session.load(Model.class, 4));
+            mark.addModel(session.load(Model.class, 5));
 
-            Autor second = Autor.of("Anatoliy");
-            second.getBooks().add(two);
-
-            session.persist(first);
-            session.persist(second);
-
-            Autor person = session.get(Autor.class, 1);
-            session.remove(person);
+            session.save(mark);
 
             session.getTransaction().commit();
             session.close();
