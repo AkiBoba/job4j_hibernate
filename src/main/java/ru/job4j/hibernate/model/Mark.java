@@ -6,14 +6,14 @@ import java.util.List;
 import java.util.Objects;
 
 @Entity
-@Table(name = "mark")
+@Table(name = "marks")
 public class Mark {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
     private String name;
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "mark")
     private List<Model> models = new ArrayList<>();
 
     public static Mark of(String name) {
@@ -65,5 +65,17 @@ public class Mark {
     @Override
     public int hashCode() {
         return Objects.hash(id);
+    }
+
+    @Override
+    public String toString() {
+        return "Mark{"
+                +
+                "id="
+                + id
+                +
+                ", name='" + name + '\''
+                +
+                '}';
     }
 }

@@ -5,11 +5,10 @@ import org.hibernate.SessionFactory;
 import org.hibernate.boot.MetadataSources;
 import org.hibernate.boot.registry.StandardServiceRegistry;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
-import ru.job4j.hibernate.model.Mark;
-import ru.job4j.hibernate.model.Model;
+import ru.job4j.hibernate.model.Autor;
+import ru.job4j.hibernate.model.Books;
 
-public class HbmRunCars {
-
+public class HbmRunBooks {
     public static void main(String[] args) {
         final StandardServiceRegistry registry = new StandardServiceRegistryBuilder()
                 .configure().build();
@@ -18,25 +17,21 @@ public class HbmRunCars {
             Session session = sf.openSession();
             session.beginTransaction();
 
-            Model one = Model.of("100");
-            session.save(one);
-            Model two = Model.of("200");
-            session.save(two);
-            Model three = Model.of("300");
-            session.save(three);
-            Model four = Model.of("500");
-            session.save(four);
-            Model five = Model.of("600");
-            session.save(five);
+            Books one = Books.of("Book");
+            Books two = Books.of("Probook");
 
-            Mark mark = Mark.of("MB");
-            mark.addModel(session.load(Model.class, 1));
-            mark.addModel(session.load(Model.class, 2));
-            mark.addModel(session.load(Model.class, 3));
-            mark.addModel(session.load(Model.class, 4));
-            mark.addModel(session.load(Model.class, 5));
+            Autor first = Autor.of("Nikolay");
+            first.getBooks().add(one);
+            first.getBooks().add(two);
 
-            session.save(mark);
+            Autor second = Autor.of("Anatoliy");
+            second.getBooks().add(two);
+
+            session.persist(first);
+            session.persist(second);
+
+            Autor person = session.get(Autor.class, 1);
+            session.remove(person);
 
             session.getTransaction().commit();
             session.close();

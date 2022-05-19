@@ -5,11 +5,15 @@ import org.hibernate.SessionFactory;
 import org.hibernate.boot.MetadataSources;
 import org.hibernate.boot.registry.StandardServiceRegistry;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
-import ru.job4j.hibernate.model.Autor;
-import ru.job4j.hibernate.model.Books;
+import ru.job4j.hibernate.model.Mark;
+import ru.job4j.hibernate.model.Model;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class HbmRun {
     public static void main(String[] args) {
+        List<Mark> list = new ArrayList<>();
         final StandardServiceRegistry registry = new StandardServiceRegistryBuilder()
                 .configure().build();
         try {
@@ -17,28 +21,28 @@ public class HbmRun {
             Session session = sf.openSession();
             session.beginTransaction();
 
-            Books one = Books.of("Book");
-            Books two = Books.of("Probook");
+            /* Mark mark = Mark.of("MB");
+            Model two = Model.of("200", mark);
+            Model three = Model.of("300", mark);
+            session.save(two);
+            session.save(three);
+            mark.getModels().add(two);
+            mark.getModels().add(three);
 
-            Autor first = Autor.of("Nikolay");
-            first.getBooks().add(one);
-            first.getBooks().add(two);
+            session.persist(mark);*/
 
-            Autor second = Autor.of("Anatoliy");
-            second.getBooks().add(two);
-
-            session.persist(first);
-            session.persist(second);
-
-            Autor person = session.get(Autor.class, 1);
-            session.remove(person);
-
+            list = session.createQuery(
+                    "select distinct m from Mark m join fetch m.models"
+            ).list();
             session.getTransaction().commit();
             session.close();
         }  catch (Exception e) {
             e.printStackTrace();
         } finally {
             StandardServiceRegistryBuilder.destroy(registry);
+        }
+        for (Model model : list.get(0).getModels()) {
+            System.out.println(model);
         }
     }
 }

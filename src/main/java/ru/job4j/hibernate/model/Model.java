@@ -1,16 +1,28 @@
 package ru.job4j.hibernate.model;
 
+import lombok.Data;
+
 import javax.persistence.*;
 import java.util.Objects;
 
 @Entity
-@Table(name = "model")
+@Table(name = "models")
 public class Model {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
     private String name;
+    @ManyToOne
+    @JoinColumn(name = "mark_id")
+    private Mark mark;
+
+    public static Model of(String name, Mark mark) {
+        Model model = new Model();
+        model.name = name;
+        model.mark = mark;
+        return model;
+    }
 
     public int getId() {
         return id;
@@ -20,10 +32,8 @@ public class Model {
         return name;
     }
 
-    public static Model of(String name) {
-        Model model = new Model();
-        model.name = name;
-        return model;
+    public Mark getMark() {
+        return mark;
     }
 
     public void setId(int id) {
@@ -34,20 +44,18 @@ public class Model {
         this.name = name;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        Model model = (Model) o;
-        return id == model.id && Objects.equals(name, model.name);
+    public void setMark(Mark mark) {
+        this.mark = mark;
     }
 
     @Override
-    public int hashCode() {
-        return Objects.hash(id, name);
+    public String toString() {
+        return "Model{"
+                +
+                "id=" + id
+                +
+                ", name='" + name + '\''
+                +
+                '}';
     }
 }
